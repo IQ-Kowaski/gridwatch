@@ -52,7 +52,7 @@ export default function Home() {
         <div className="mt-9 flex flex-wrap gap-3">
           <Link
             to="/watch"
-            className="rounded-sm border border-[var(--color-live)]/50 px-5 py-2.5 text-sm font-semibold text-[var(--color-live)] transition-colors hover:bg-[var(--color-live)]/10"
+            className="rounded-sm border border-[var(--color-red-flag)]/50 px-5 py-2.5 text-sm font-semibold text-[var(--color-red-flag)] transition-colors hover:bg-[var(--color-red-flag)]/10"
           >
             {isLive ? 'Watch live' : 'Watch'}
           </Link>

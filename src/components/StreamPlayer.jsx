@@ -94,23 +94,25 @@ export default function StreamPlayer({ feeds, sessionLabel }) {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-[var(--color-hairline)] bg-black">
-        {active?.embedUrl && (
-          <iframe
-            key={active.id}
-            src={active.embedUrl}
-            title={active.label}
-            className="h-full w-full"
-            allow="autoplay; fullscreen"
-            allowFullScreen
-          />
-        )}
-        {active && <PlayerOverlay stream={active} />}
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="lg:col-span-2">
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-[var(--color-hairline)] bg-black">
+          {active?.embedUrl && (
+            <iframe
+              key={active.id}
+              src={active.embedUrl}
+              title={active.label}
+              className="h-full w-full"
+              allow="autoplay; fullscreen"
+              allowFullScreen
+            />
+          )}
+          {active && <PlayerOverlay stream={active} />}
+        </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-baseline justify-between">
+      <div className="space-y-4 lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto lg:pr-1">
+        <div className="flex items-baseline justify-between lg:sticky lg:-top-1 lg:bg-[var(--color-ink)] lg:pt-2">
           <p className="text-xs font-medium uppercase tracking-[0.15em] text-[var(--color-paper-dim)]">
             Available streams
           </p>
@@ -194,15 +196,16 @@ export default function StreamPlayer({ feeds, sessionLabel }) {
 
 export function StreamPlayerSkeleton() {
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <motion.div
         initial={{ opacity: 0.4 }}
         animate={{ opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 1.6, repeat: Infinity }}
-        className="aspect-video w-full rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]"
+        className="aspect-video w-full rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] lg:col-span-2"
       />
       <div className="space-y-2">
         <div className="h-3 w-24 animate-pulse rounded bg-[var(--color-panel-2)]" />
+        <div className="h-12 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]" />
         <div className="h-12 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]" />
         <div className="h-12 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]" />
       </div>

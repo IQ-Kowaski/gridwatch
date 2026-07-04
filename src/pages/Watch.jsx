@@ -38,7 +38,7 @@ export default function Watch() {
   }, [session?.race?.round, session?.label])
 
   return (
-    <div className="mx-auto max-w-4xl px-5 py-12 md:px-8 md:py-16">
+    <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
       <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-[var(--color-signal)]">
         Live coverage
       </p>
