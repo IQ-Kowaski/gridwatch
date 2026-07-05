@@ -84,6 +84,61 @@ export async function fetchConstructorStandings() {
   }))
 }
 
+/** Race results for a given round. */
+export async function fetchRaceResults(round) {
+  const data = await getJSON(`${JOLPICA}/current/${round}/results.json`)
+  const results = data?.MRData?.RaceTable?.Races?.[0]?.Results ?? []
+  return results.map((r) => ({
+    position: Number(r.position),
+    driverId: r.Driver?.driverId,
+    code: r.Driver?.code || r.Driver?.familyName?.slice(0, 3).toUpperCase(),
+    name: `${r.Driver?.givenName} ${r.Driver?.familyName}`,
+    constructor: r.Constructors?.[0]?.name,
+    constructorId: r.Constructors?.[0]?.constructorId,
+    laps: Number(r.laps),
+    time: r.Time?.time || r.status,
+    status: r.status,
+    points: Number(r.points),
+    grid: Number(r.grid),
+  }))
+}
+
+/** Qualifying results for a given round. */
+export async function fetchQualifyingResults(round) {
+  const data = await getJSON(`${JOLPICA}/current/${round}/qualifying.json`)
+  const results = data?.MRData?.RaceTable?.Races?.[0]?.QualifyingResults ?? []
+  return results.map((r) => ({
+    position: Number(r.position),
+    driverId: r.Driver?.driverId,
+    code: r.Driver?.code || r.Driver?.familyName?.slice(0, 3).toUpperCase(),
+    name: `${r.Driver?.givenName} ${r.Driver?.familyName}`,
+    constructor: r.Constructors?.[0]?.name,
+    constructorId: r.Constructors?.[0]?.constructorId,
+    q1: r.Q1,
+    q2: r.Q2,
+    q3: r.Q3,
+  }))
+}
+
+/** Sprint results for a given round. */
+export async function fetchSprintResults(round) {
+  const data = await getJSON(`${JOLPICA}/current/${round}/sprint.json`)
+  const results = data?.MRData?.RaceTable?.Races?.[0]?.SprintResults ?? []
+  return results.map((r) => ({
+    position: Number(r.position),
+    driverId: r.Driver?.driverId,
+    code: r.Driver?.code || r.Driver?.familyName?.slice(0, 3).toUpperCase(),
+    name: `${r.Driver?.givenName} ${r.Driver?.familyName}`,
+    constructor: r.Constructors?.[0]?.name,
+    constructorId: r.Constructors?.[0]?.constructorId,
+    laps: Number(r.laps),
+    time: r.Time?.time || r.status,
+    status: r.status,
+    points: Number(r.points),
+    grid: Number(r.grid),
+  }))
+}
+
 /**
  * Is any session currently live, based on schedule times alone (race weekend
  * sessions are treated as "live" from their start time for a 3h window,

@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Home from './pages/Home'
+import Results from './pages/Results'
 import Schedule from './pages/Schedule'
 import Standings from './pages/Standings'
 import Watch from './pages/Watch'
@@ -20,6 +21,7 @@ export default function App() {
         <main id="main" className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/results" element={<Results />} />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/standings" element={<Standings />} />
             <Route path="/watch" element={<Watch />} />
