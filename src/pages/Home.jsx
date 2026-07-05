@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Hero from '../components/Hero'
@@ -6,6 +7,70 @@ import LiveBadge from '../components/LiveBadge'
 import { usePolling } from '../lib/usePolling'
 import { fetchSchedule, fetchDriverStandings, deriveLiveSession } from '../lib/api'
 import { formatSessionTime } from '../lib/format'
+
+function DriverCard({ driver: d, index, leaderPoints }) {
+  const [imgErr, setImgErr] = useState(false)
+  const initials = d.name
+    ? d.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
+    : d.code
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.4, ease: 'easeOut' }}
+      whileHover={{ y: -4 }}
+      className="group relative rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] p-4 transition-colors hover:border-[var(--color-signal)]/40 hover:bg-[var(--color-panel-2)]"
+    >
+      <span
+        className={`tnum absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded text-[10px] font-bold ${
+          d.position === 1
+            ? 'bg-[var(--color-signal)] text-[var(--color-ink)]'
+            : 'bg-[var(--color-panel-2)] text-[var(--color-paper-dim)]'
+        }`}
+      >
+        {d.position}
+      </span>
+
+      <div className="mb-3 flex justify-center pt-2">
+        {imgErr ? (
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-panel-2)] ring-2 ring-[var(--color-hairline)] transition-all group-hover:ring-[var(--color-signal)]/40">
+            <span className="text-sm font-bold tracking-wide text-[var(--color-paper-dim)]">
+              {initials}
+            </span>
+          </div>
+        ) : (
+          <img
+            src={`https://media.formula1.com/content/dam/fom-website/drivers/2025DRIVERS/${d.code}/${d.code}01.png`}
+            alt={d.name}
+            className="h-16 w-16 rounded-full object-cover ring-2 ring-[var(--color-hairline)] transition-all group-hover:ring-[var(--color-signal)]/40"
+            onError={() => setImgErr(true)}
+            loading="lazy"
+          />
+        )}
+      </div>
+
+      <div className="text-center">
+        <p className="truncate text-sm font-semibold text-[var(--color-paper)]">{d.code}</p>
+        <p className="truncate text-xs text-[var(--color-paper-dim)]">{d.constructor}</p>
+      </div>
+
+      <div className="mt-3 flex items-center justify-center gap-1.5 border-t border-[var(--color-hairline)] pt-2.5">
+        <div className="h-1 w-12 overflow-hidden rounded-full bg-[var(--color-hairline)]">
+          <div
+            className="h-full rounded-full bg-[var(--color-signal)] transition-all group-hover:opacity-80"
+            style={{
+              width: `${Math.min(100, leaderPoints > 0 ? (d.points / leaderPoints) * 100 : 0)}%`,
+            }}
+          />
+        </div>
+        <span className="tnum font-mono text-sm font-semibold text-[var(--color-signal)]">
+          {d.points}
+        </span>
+      </div>
+    </motion.div>
+  )
+}
 
 function nextSession(schedule) {
   const now = Date.now()
@@ -85,11 +150,11 @@ export default function Home() {
         </div>
 
         {!drivers && (
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
-                className="h-20 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]"
+                className="h-44 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]"
               />
             ))}
           </div>
@@ -98,24 +163,7 @@ export default function Home() {
         {drivers && (
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
             {drivers.slice(0, 5).map((d, i) => (
-              <motion.div
-                key={d.driverId}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] p-4"
-              >
-                <div className="tnum mb-2 flex h-6 w-6 items-center justify-center rounded-sm bg-[var(--color-panel-2)] text-xs font-semibold text-[var(--color-paper-dim)]">
-                  {d.position}
-                </div>
-                <div className="truncate text-sm font-semibold text-[var(--color-paper)]">
-                  {d.code}
-                </div>
-                <div className="truncate text-xs text-[var(--color-paper-dim)]">{d.constructor}</div>
-                <div className="tnum mt-2 font-mono text-lg font-semibold text-[var(--color-signal)]">
-                  {d.points}
-                </div>
-              </motion.div>
+              <DriverCard key={d.driverId} driver={d} index={i} leaderPoints={drivers[0]?.points ?? 1} />
             ))}
           </div>
         )}
