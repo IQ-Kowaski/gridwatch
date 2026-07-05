@@ -6,7 +6,7 @@ import LiveBadge from '../components/LiveBadge'
 import { usePolling } from '../lib/usePolling'
 import { fetchSchedule, fetchDriverStandings, deriveLiveSession } from '../lib/api'
 import { formatSessionTime } from '../lib/format'
-import { driverImg } from '../lib/driverAssets'
+import { driverImg, constructorColor, initials } from '../lib/driverAssets'
 
 function DriverCard({ driver: d, index, leaderPoints }) {
   const imgUrl = driverImg(d.code)
