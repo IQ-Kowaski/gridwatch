@@ -46,7 +46,7 @@ export function driverImg(code) {
   const m = DRIVER_MAP[code]
   if (!m) return null
   const fallback = `d_common:f1:${m.year}:fallback:driver:${m.year}fallbackdriverright.webp`
-  const path = `v1740000001/common/f1/${m.team}/${m.code6}/${m.year}${m.team}${m.code6}right.webp`
+  const path = `v1740000001/common/f1/${m.year}/${m.team}/${m.code6}/${m.year}${m.team}${m.code6}right.webp`
   return `${F1_CDN}/${fallback}/${path}`
 }
 
