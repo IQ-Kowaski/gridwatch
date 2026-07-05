@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Hero from '../components/Hero'
@@ -7,12 +6,11 @@ import LiveBadge from '../components/LiveBadge'
 import { usePolling } from '../lib/usePolling'
 import { fetchSchedule, fetchDriverStandings, deriveLiveSession } from '../lib/api'
 import { formatSessionTime } from '../lib/format'
+import { driverImg } from '../lib/driverAssets'
 
 function DriverCard({ driver: d, index, leaderPoints }) {
-  const [imgErr, setImgErr] = useState(false)
-  const initials = d.name
-    ? d.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
-    : d.code
+  const imgUrl = driverImg(d.code)
+  const cc = constructorColor(d.constructor)
 
   return (
     <motion.div
@@ -20,10 +18,10 @@ function DriverCard({ driver: d, index, leaderPoints }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4, ease: 'easeOut' }}
       whileHover={{ y: -4 }}
-      className="group relative rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] p-4 transition-colors hover:border-[var(--color-signal)]/40 hover:bg-[var(--color-panel-2)]"
+      className="group relative rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] p-4 transition-all hover:border-[var(--color-signal)]/40 hover:bg-[var(--color-panel-2)] hover:shadow-lg hover:shadow-[var(--color-signal)]/5"
     >
       <span
-        className={`tnum absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded text-[10px] font-bold ${
+        className={`tnum absolute right-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded text-[10px] font-bold ${
           d.position === 1
             ? 'bg-[var(--color-signal)] text-[var(--color-ink)]'
             : 'bg-[var(--color-panel-2)] text-[var(--color-paper-dim)]'
@@ -33,20 +31,25 @@ function DriverCard({ driver: d, index, leaderPoints }) {
       </span>
 
       <div className="mb-3 flex justify-center pt-2">
-        {imgErr ? (
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-panel-2)] ring-2 ring-[var(--color-hairline)] transition-all group-hover:ring-[var(--color-signal)]/40">
-            <span className="text-sm font-bold tracking-wide text-[var(--color-paper-dim)]">
-              {initials}
-            </span>
-          </div>
-        ) : (
+        {imgUrl ? (
           <img
-            src={`https://media.formula1.com/content/dam/fom-website/drivers/2025DRIVERS/${d.code}/${d.code}01.png`}
+            src={imgUrl}
             alt={d.name}
-            className="h-16 w-16 rounded-full object-cover ring-2 ring-[var(--color-hairline)] transition-all group-hover:ring-[var(--color-signal)]/40"
-            onError={() => setImgErr(true)}
+            className="h-16 w-16 rounded-full object-cover ring-2 ring-[var(--color-hairline)] transition-all group-hover:scale-105 group-hover:ring-[var(--color-signal)]/40"
             loading="lazy"
           />
+        ) : (
+          <div
+            className="flex h-16 w-16 items-center justify-center rounded-full ring-2 ring-[var(--color-hairline)] transition-all group-hover:scale-105 group-hover:ring-[var(--color-signal)]/40"
+            style={{ backgroundColor: cc.bg }}
+          >
+            <span
+              className="text-sm font-bold tracking-wide"
+              style={{ color: cc.accent }}
+            >
+              {initials(d.name)}
+            </span>
+          </div>
         )}
       </div>
 
@@ -58,13 +61,11 @@ function DriverCard({ driver: d, index, leaderPoints }) {
       <div className="mt-3 flex items-center justify-center gap-1.5 border-t border-[var(--color-hairline)] pt-2.5">
         <div className="h-1 w-12 overflow-hidden rounded-full bg-[var(--color-hairline)]">
           <div
-            className="h-full rounded-full bg-[var(--color-signal)] transition-all group-hover:opacity-80"
-            style={{
-              width: `${Math.min(100, leaderPoints > 0 ? (d.points / leaderPoints) * 100 : 0)}%`,
-            }}
+            className="h-full rounded-full transition-all group-hover:opacity-80"
+            style={{ backgroundColor: cc.accent, width: `${Math.min(100, leaderPoints > 0 ? (d.points / leaderPoints) * 100 : 0)}%` }}
           />
         </div>
-        <span className="tnum font-mono text-sm font-semibold text-[var(--color-signal)]">
+        <span className="tnum font-mono text-sm font-semibold" style={{ color: cc.accent }}>
           {d.points}
         </span>
       </div>
