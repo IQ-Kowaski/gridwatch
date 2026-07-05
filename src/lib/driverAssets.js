@@ -1,4 +1,4 @@
-const F1_CDN = 'https://media.formula1.com/image/upload/c_lfill,w_128/q_auto'
+const F1_CDN = 'https://media.formula1.com/image/upload/c_fill,g_face,w_128,h_128/q_auto'
 
 const TEAM_COLORS = {
   'Red Bull Racing': { bg: '#1a1a2e', accent: '#3671c6' },
